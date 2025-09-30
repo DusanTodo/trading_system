@@ -2,7 +2,7 @@
 
 List<User> users = new List<User>();
 
-users.Add(new User("Dusan", "d@t", "pass"));
+users.Add(new User("d@t", "pass"));
 
 User? active_user = null;
 
@@ -11,6 +11,7 @@ bool running = true;
 while (running)
 {
     Console.Clear();
+    Console.ForegroundColor = ConsoleColor.Green;
 
 
     if (active_user == null)
@@ -21,6 +22,7 @@ while (running)
         Console.WriteLine("1. Log in");
         Console.WriteLine("2. Register");
         Console.WriteLine("3. Exit");
+        Console.WriteLine("-------");
         Console.Write("Choose: ");
         string? choice = Console.ReadLine();
         switch (choice)
@@ -29,8 +31,6 @@ while (running)
                 Console.Clear();
                 System.Console.Write("Username: ");
                 string username = Console.ReadLine();
-                System.Console.Write("Email: ");
-                string email = Console.ReadLine();
                 System.Console.Write("Password: ");
                 string password = Console.ReadLine();
                 foreach (User user in users)
@@ -56,12 +56,10 @@ while (running)
                 Console.Clear();
                 System.Console.Write("Username: ");
                 username = Console.ReadLine();
-                System.Console.Write("Email: ");
-                email = Console.ReadLine();
                 Console.Clear();
                 System.Console.Write("Password: ");
                 password = Console.ReadLine();
-                users.Add(new User(username, email, password));
+                users.Add(new User(username, password));
                 Console.Clear();
                 System.Console.WriteLine($"{username} created.");
                 Console.ReadLine();
@@ -72,15 +70,13 @@ while (running)
                 running = false;
                 break;
 
-
         }
-
     }
 
     else
     {
         Console.Clear();
-        Console.WriteLine($"Logged in as {active_user.Username} ({active_user.Email})");
+        Console.WriteLine($"Logged in as {active_user.Username}");
         Console.WriteLine("-------------------");
         Console.WriteLine("1. Logout");
         Console.WriteLine("2. Upload item");
@@ -88,6 +84,7 @@ while (running)
         Console.WriteLine("4. Browse trade requests");
         Console.WriteLine("5. Delete account");
         Console.WriteLine("5. Exit");
+        Console.WriteLine("-------");
         Console.Write("Choose: ");
         string? choice = Console.ReadLine();
 
@@ -96,8 +93,8 @@ while (running)
             case "1":
                 active_user = null;
                 break;
-            
-            
+
+
         }
     }
     
