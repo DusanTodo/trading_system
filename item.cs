@@ -1,4 +1,5 @@
-namespace App;
+namespace App
+
 {
     public class Item
     {
@@ -15,6 +16,15 @@ namespace App;
             Name = name;
             Description = description;
             Owner = owner;
+        }
+        public static void SetNextId(int next)
+        {
+            if (next > _nextId)
+                _nextId = next;
+        }
+        public static int GetNextId()
+        {
+            return _nextId;
         }
     }
 } 

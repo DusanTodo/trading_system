@@ -1,6 +1,6 @@
 namespace App;
 
-class User
+public class User
 
 {
     public string Username;

@@ -78,19 +78,23 @@ while (running)
         Console.Clear();
         Console.WriteLine($"Logged in as {active_user.Username}");
         Console.WriteLine("-------------------");
-        Console.WriteLine("1. Logout");
-        Console.WriteLine("2. Upload item");
-        Console.WriteLine("3. Browse items");
-        Console.WriteLine("4. Browse trade requests");
+        Console.WriteLine("1. Upload item");
+        Console.WriteLine("2. Browse items");
+        Console.WriteLine("3. Browse trade requests");
+        Console.WriteLine("4. Logout");
         Console.WriteLine("5. Delete account");
-        Console.WriteLine("5. Exit");
+        Console.WriteLine("6. Exit");
         Console.WriteLine("-------");
         Console.Write("Choose: ");
         string? choice = Console.ReadLine();
 
         switch (choice)
         {
-            case "1":
+            
+
+
+
+            case "4":
                 active_user = null;
                 break;
 
