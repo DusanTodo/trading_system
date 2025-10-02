@@ -112,14 +112,66 @@ while (running)
                 break;
 
             case "2":
+                // Browse items (other users' items) + request trade
                 Console.Clear();
-                Console.WriteLine("All items:");
+                Console.WriteLine("Available items (not yours):");
+                bool anyItem = false;
                 foreach (var it in items)
                 {
-                    Console.WriteLine($"[{it.Id}] {it.Name} - {it.Description} (Owner: {it.Owner})");
+                    if (it.Owner != active_user.Username)
+                    {
+                        anyItem = true;
+                        Console.WriteLine($"Id: {it.Id} | {it.Name} | Owner: {it.Owner}");
+                        Console.WriteLine($"   {it.Description}");
+                    }
                 }
+                if (!anyItem)
+                {
+                    Console.WriteLine("-- No items available --");
+                    Console.ReadLine();
+                    break;
+                }
+
+                Console.WriteLine();
+                Console.Write("Enter item Id to request trade or press Enter to go back: ");
+                string? idInput = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(idInput))
+                    break;
+
+                if (!int.TryParse(idInput, out int itemIdReq))
+                {
+                    Console.WriteLine("Invalid id.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                // Hitta item
+                Item? selItem = null;
+                foreach (var it in items)
+                {
+                    if (it.Id == itemIdReq) { selItem = it; break; }
+                }
+                if (selItem == null)
+                {
+                    Console.WriteLine("Item not found.");
+                    Console.ReadLine();
+                    break;
+                }
+                if (selItem.Owner == active_user.Username)
+                {
+                    Console.WriteLine("You cannot request your own item.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                // Skapa trade (sender = active_user, receiver = selItem.Owner)
+                trades.Add(new Trade(selItem.Id, active_user.Username, selItem.Owner));
+                Database.Save(users, items, trades); // spara direkt
+                Console.WriteLine("Trade request sent.");
                 Console.ReadLine();
                 break;
+
+            
 
             case "4":
                 active_user = null;

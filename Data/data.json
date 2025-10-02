@@ -1,13 +1,12 @@
 {
   "Users": [
-    {},
     {}
   ],
   "Items": [
     {
       "Id": 1,
-      "Name": "testgpu1",
-      "Description": "gpu1description",
+      "Name": "test",
+      "Description": "testdscr",
       "Owner": "d@t"
     }
   ],
