@@ -1,0 +1,17 @@
+{
+  "Users": [
+    {},
+    {}
+  ],
+  "Items": [
+    {
+      "Id": 1,
+      "Name": "testgpu1",
+      "Description": "gpu1description",
+      "Owner": "d@t"
+    }
+  ],
+  "Trades": [],
+  "NextItemId": 2,
+  "NextTradeId": 1
+}

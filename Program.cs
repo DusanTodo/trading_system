@@ -1,18 +1,24 @@
 ﻿using App;
 
-List<User> users = new List<User>();
+// --- Ladda data från fil ---
+List<User> users;
+List<Item> items;
+List<Trade> trades;
+Database.Load(out users, out items, out trades);
 
-users.Add(new User("d@t", "pass"));
+// Om inga users finns, lägg till en default
+if (users.Count == 0)
+{
+    users.Add(new User("d@t", "pass"));
+}
 
 User? active_user = null;
-
 bool running = true;
 
 while (running)
 {
     Console.Clear();
     Console.ForegroundColor = ConsoleColor.Green;
-
 
     if (active_user == null)
     {
@@ -29,9 +35,9 @@ while (running)
         {
             case "1":
                 Console.Clear();
-                System.Console.Write("Username: ");
+                Console.Write("Username: ");
                 string username = Console.ReadLine();
-                System.Console.Write("Password: ");
+                Console.Write("Password: ");
                 string password = Console.ReadLine();
                 foreach (User user in users)
                 {
@@ -39,7 +45,7 @@ while (running)
                     {
                         Console.Clear();
                         active_user = user;
-                        System.Console.WriteLine($"Welcome {username}!");
+                        Console.WriteLine($"Welcome {username}!");
                         Console.ReadLine();
                         break;
                     }
@@ -49,30 +55,30 @@ while (running)
                     Console.WriteLine("Incorrect username or password, please try again.");
                     Console.ReadLine();
                 }
-
                 break;
 
             case "2":
                 Console.Clear();
-                System.Console.Write("Username: ");
+                Console.Write("Username: ");
                 username = Console.ReadLine();
                 Console.Clear();
-                System.Console.Write("Password: ");
+                Console.Write("Password: ");
                 password = Console.ReadLine();
                 users.Add(new User(username, password));
+
+                // --- Spara direkt efter ändring ---
+                Database.Save(users, items, trades);
+
                 Console.Clear();
-                System.Console.WriteLine($"{username} created.");
+                Console.WriteLine($"{username} created.");
                 Console.ReadLine();
                 break;
 
             case "3":
-
                 running = false;
                 break;
-
         }
     }
-
     else
     {
         Console.Clear();
@@ -90,16 +96,56 @@ while (running)
 
         switch (choice)
         {
-            
+            case "1":
+                Console.Clear();
+                Console.Write("Item name: ");
+                string itemName = Console.ReadLine();
+                Console.Write("Description: ");
+                string desc = Console.ReadLine();
+                items.Add(new Item(itemName, desc, active_user.Username));
 
+                // --- Spara direkt efter ändring ---
+                Database.Save(users, items, trades);
 
+                Console.WriteLine("Item uploaded!");
+                Console.ReadLine();
+                break;
+
+            case "2":
+                Console.Clear();
+                Console.WriteLine("All items:");
+                foreach (var it in items)
+                {
+                    Console.WriteLine($"[{it.Id}] {it.Name} - {it.Description} (Owner: {it.Owner})");
+                }
+                Console.ReadLine();
+                break;
 
             case "4":
                 active_user = null;
                 break;
 
+            case "5":
+                // Ta bort kontot
+                users.Remove(active_user);
 
+                // Ta bort alla items som ägs av användaren
+                items.RemoveAll(i => i.Owner == active_user.Username);
+
+                // Ta bort alla trades som är kopplade till användaren
+                trades.RemoveAll(t => t.SenderUsername == active_user.Username || t.ReceiverUsername == active_user.Username);
+
+                // --- Spara direkt efter ändring ---
+                Database.Save(users, items, trades);
+
+                active_user = null;
+                Console.WriteLine("Account deleted.");
+                Console.ReadLine();
+                break;
+
+            case "6":
+                running = false;
+                break;
         }
     }
-    
 }
