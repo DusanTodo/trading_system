@@ -8,7 +8,7 @@ namespace App
         public int Id { get; private set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Owner { get; private set; }
+        public string Owner { get; set; }
 
         public Item(string name, string description, string owner)
         {

@@ -85,11 +85,12 @@ while (running)
         Console.WriteLine($"Logged in as {active_user.Username}");
         Console.WriteLine("-------------------");
         Console.WriteLine("1. Upload item");
-        Console.WriteLine("2. Browse items");
+        Console.WriteLine("2. Browse available items");
         Console.WriteLine("3. Browse trade requests");
-        Console.WriteLine("4. Logout");
-        Console.WriteLine("5. Delete account");
-        Console.WriteLine("6. Exit");
+        Console.WriteLine("4. Browse completed requests");
+        Console.WriteLine("5. Logout");
+        Console.WriteLine("6. Delete account");
+        Console.WriteLine("7. Exit");
         Console.WriteLine("-------");
         Console.Write("Choose: ");
         string? choice = Console.ReadLine();
@@ -165,19 +166,103 @@ while (running)
                 }
 
                 // Skapa trade (sender = active_user, receiver = selItem.Owner)
-                trades.Add(new Trade(selItem.Id, active_user.Username, selItem.Owner));
+                trades.Add(new Trade(selItem.Id, selItem.Description, active_user.Username, selItem.Owner));
                 Database.Save(users, items, trades); // spara direkt
                 Console.WriteLine("Trade request sent.");
                 Console.ReadLine();
                 break;
 
+            case "3":
+                // Browse incoming trades (pending)
+                Console.Clear();
+                Console.WriteLine("Incoming trade requests (Pending):");
+                bool hasIncoming = false;
+                foreach (var t in trades)
+                {
+                    if (t.ReceiverUsername == active_user.Username && t.Status == TradeStatus.Pending)
+                    {
+                        hasIncoming = true;
+                        Console.WriteLine($"Trade Id: {t.Id} | ItemId: {t.ItemId} | ItemDescription: {t.ItemDescription} From: {t.SenderUsername}");
+                    }
+                }
+                if (!hasIncoming)
+                {
+                    Console.WriteLine("-- No incoming requests --");
+                    Console.ReadLine();
+                    break;
+                }
+
+                Console.Write("Enter trade Id to manage or press Enter to go back: ");
+                string? tInput = Console.ReadLine();
+                if (string.IsNullOrWhiteSpace(tInput)) break;
+                if (!int.TryParse(tInput, out int tradeId))
+                {
+                    Console.WriteLine("Invalid id.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                // Hitta trade
+                Trade? foundTrade = null;
+                foreach (var t in trades)
+                {
+                    if (t.Id == tradeId) { foundTrade = t; break; }
+                }
+                if (foundTrade == null)
+                {
+                    Console.WriteLine("Trade not found.");
+                    Console.ReadLine();
+                    break;
+                }
+                if (foundTrade.ReceiverUsername != active_user.Username)
+                {
+                    Console.WriteLine("You are not allowed to manage this trade.");
+                    Console.ReadLine();
+                    break;
+                }
+
+                Console.WriteLine("1. Approve");
+                Console.WriteLine("2. Deny");
+                Console.Write("Choose: ");
+                string? act = Console.ReadLine();
+                if (act == "1")
+                {
+                    foundTrade.Approve();
+                    // Följande: flytta ägandeskap eller ta bort item.
+                    // Här byter vi ägare till avsändaren (för att inte förlora historik)
+                    foreach (var it in items)
+                    {
+                        if (it.Id == foundTrade.ItemId)
+                        {
+                            it.Owner = foundTrade.SenderUsername; // OBS: kräver Owner setbar eller byt metod
+                            break;
+                        }
+                    }
+                    Database.Save(users, items, trades);
+                    Console.WriteLine("Trade approved and ownership transferred.");
+                    Console.ReadLine();
+                }
+                else if (act == "2")
+                {
+                    foundTrade.Deny();
+                    Database.Save(users, items, trades);
+                    Console.WriteLine("Trade denied.");
+                    Console.ReadLine();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid choice.");
+                    Console.ReadLine();
+                }
+                break;
+
             
 
-            case "4":
+            case "5":
                 active_user = null;
                 break;
 
-            case "5":
+            case "6":
                 // Ta bort kontot
                 users.Remove(active_user);
 
@@ -195,7 +280,7 @@ while (running)
                 Console.ReadLine();
                 break;
 
-            case "6":
+            case "7":
                 running = false;
                 break;
         }
