@@ -1,13 +1,13 @@
 ﻿using App;
 
 // --- Ladda data från fil ---
-List<User> users;
-List<Item> items;
-List<Trade> trades;
-Database.Load(out users, out items, out trades);
+List<User> users = new List<User>();
+List<Item> items = new List<Item>();
+List<Trade> trades = new List<Trade>();
+
 
 // Om inga users finns, lägg till en default
-if (users.Count == 0)
+if (users.Count() == 0)
 {
     users.Add(new User("d@t", "pass"));
 }
@@ -66,8 +66,6 @@ while (running)
                 password = Console.ReadLine();
                 users.Add(new User(username, password));
 
-                // --- Spara direkt efter ändring ---
-                Database.Save(users, items, trades);
 
                 Console.Clear();
                 Console.WriteLine($"{username} created.");
@@ -105,8 +103,7 @@ while (running)
                 string desc = Console.ReadLine();
                 items.Add(new Item(itemName, desc, active_user.Username));
 
-                // --- Spara direkt efter ändring ---
-                Database.Save(users, items, trades);
+               
 
                 Console.WriteLine("Item uploaded!");
                 Console.ReadLine();
@@ -117,7 +114,7 @@ while (running)
                 Console.Clear();
                 Console.WriteLine("Available items (not yours):");
                 bool anyItem = false;
-                foreach (var it in items)
+                foreach (Item it in items)
                 {
                     if (it.Owner != active_user.Username)
                     {
@@ -148,7 +145,7 @@ while (running)
 
                 // Hitta item
                 Item? selItem = null;
-                foreach (var it in items)
+                foreach (Item it in items)
                 {
                     if (it.Id == itemIdReq) { selItem = it; break; }
                 }
@@ -167,7 +164,7 @@ while (running)
 
                 // Skapa trade (sender = active_user, receiver = selItem.Owner)
                 trades.Add(new Trade(selItem.Id, selItem.Description, active_user.Username, selItem.Owner));
-                Database.Save(users, items, trades); // spara direkt
+                
                 Console.WriteLine("Trade request sent.");
                 Console.ReadLine();
                 break;
@@ -177,7 +174,7 @@ while (running)
                 Console.Clear();
                 Console.WriteLine("Incoming trade requests (Pending):");
                 bool hasIncoming = false;
-                foreach (var t in trades)
+                foreach (Trade t in trades)
                 {
                     if (t.ReceiverUsername == active_user.Username && t.Status == TradeStatus.Pending)
                     {
@@ -204,7 +201,7 @@ while (running)
 
                 // Hitta trade
                 Trade? foundTrade = null;
-                foreach (var t in trades)
+                foreach (Trade t in trades)
                 {
                     if (t.Id == tradeId) { foundTrade = t; break; }
                 }
@@ -230,7 +227,7 @@ while (running)
                     foundTrade.Approve();
                     // Följande: flytta ägandeskap eller ta bort item.
                     // Här byter vi ägare till avsändaren (för att inte förlora historik)
-                    foreach (var it in items)
+                    foreach (Item it in items)
                     {
                         if (it.Id == foundTrade.ItemId)
                         {
@@ -238,14 +235,14 @@ while (running)
                             break;
                         }
                     }
-                    Database.Save(users, items, trades);
+                    
                     Console.WriteLine("Trade approved and ownership transferred.");
                     Console.ReadLine();
                 }
                 else if (act == "2")
                 {
                     foundTrade.Deny();
-                    Database.Save(users, items, trades);
+                    
                     Console.WriteLine("Trade denied.");
                     Console.ReadLine();
                 }
@@ -255,6 +252,83 @@ while (running)
                     Console.ReadLine();
                 }
                 break;
+
+            case "4":
+                {
+                    Console.Clear();
+                    Console.WriteLine("Browse Completed Requests:");
+                    Console.WriteLine("--------------------------");
+                    Console.WriteLine("1. Accepted");
+                    Console.WriteLine("2. Denied");
+                    Console.WriteLine("3. Go Back");
+                    Console.WriteLine("4. Logout");
+                    Console.WriteLine("----------");
+                    Console.Write("Choose: ");
+                    choice = Console.ReadLine();
+                    
+                    // lokal hjälpmetod för att skriva ut en trade
+                    void PrintTrade(Trade t)
+                    {
+                        string itemName = "(item missing)";
+                        foreach (Item it in items)
+                        {
+                            if (it.Id == t.ItemId)
+                            {
+                                itemName = it.Name;
+                                break;
+                            }
+                        }
+                        Console.WriteLine($"Trade Id: {t.Id} | ItemId: {t.ItemId} ({itemName}) | From: {t.SenderUsername} | To: {t.ReceiverUsername} | Status: {t.Status}");
+                    }
+
+                    bool anyFound = false;
+
+
+                    switch (choice)
+                    {
+                        case "1":
+
+                            Console.Clear();
+                            Console.WriteLine("All completed requests:");
+                            foreach (Trade t in trades)
+                            {
+                                if (t.Status == TradeStatus.Approved)
+                                {
+                                    anyFound = true;
+                                    PrintTrade(t);
+                                }
+                            }
+                            if (!anyFound)
+                            Console.WriteLine("-- No approved requests found --");
+                            Console.ReadLine();
+                            break;
+
+                        case "2":
+
+                            Console.Clear();
+                            Console.WriteLine("All Denied Requests");
+                            foreach (Trade t in trades)
+                            {
+                                if (t.Status == TradeStatus.Denied)
+                                {
+                                    anyFound = true;
+                                    PrintTrade(t);
+                                }
+                            }
+                            break;
+
+                        case "3":
+                            break;
+
+                        case "4":
+                            active_user = null;
+                            break;
+                    }
+
+                }
+                break;
+
+
 
             
 
@@ -272,8 +346,7 @@ while (running)
                 // Ta bort alla trades som är kopplade till användaren
                 trades.RemoveAll(t => t.SenderUsername == active_user.Username || t.ReceiverUsername == active_user.Username);
 
-                // --- Spara direkt efter ändring ---
-                Database.Save(users, items, trades);
+                
 
                 active_user = null;
                 Console.WriteLine("Account deleted.");
