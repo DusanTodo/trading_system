@@ -1,6 +1,6 @@
 ﻿using App;
 
-// --- Ladda data från fil ---
+// Ladda data från fil 
 List<User> users = new List<User>();
 List<Item> items = new List<Item>();
 List<Trade> trades = new List<Trade>();
@@ -9,7 +9,7 @@ List<Trade> trades = new List<Trade>();
 // Om inga users finns, lägg till en default
 if (users.Count() == 0)
 {
-    users.Add(new User("d@t", "pass"));
+    users.Add(new User("dt", "pass"));
 }
 
 User? active_user = null;
@@ -87,7 +87,7 @@ while (running)
         Console.WriteLine("3. Browse trade requests");
         Console.WriteLine("4. Browse completed requests");
         Console.WriteLine("5. Logout");
-        Console.WriteLine("6. Delete account");
+        Console.WriteLine("6. Delete account");  //inget krav för detta funktion men någonting som är alltid svårt att hitta på websidor idag:)
         Console.WriteLine("7. Exit");
         Console.WriteLine("-------");
         Console.Write("Choose: ");
@@ -299,7 +299,7 @@ while (running)
                                 }
                             }
                             if (!anyFound)
-                            Console.WriteLine("-- No approved requests found --");
+                            Console.WriteLine("NOTE: No approved requests found ");
                             Console.ReadLine();
                             break;
 
@@ -315,6 +315,9 @@ while (running)
                                     PrintTrade(t);
                                 }
                             }
+                            if (!anyFound)
+                            Console.WriteLine("NOTE: No denied requests found ");
+                            Console.ReadLine();
                             break;
 
                         case "3":
@@ -328,9 +331,6 @@ while (running)
                 }
                 break;
 
-
-
-            
 
             case "5":
                 active_user = null;

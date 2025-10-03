@@ -17,14 +17,6 @@ namespace App
             Description = description;
             Owner = owner;
         }
-        public static void SetNextId(int next)
-        {
-            if (next > _nextId)
-                _nextId = next;
-        }
-        public static int GetNextId()
-        {
-            return _nextId;
-        }
+
     }
 } 

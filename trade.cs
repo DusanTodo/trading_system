@@ -14,10 +14,10 @@ namespace App
 
         public int Id { get; private set; }
         public int ItemId { get; private set; } // id på item som efterfrågas
-        public string ItemDescription { get; private set; }   //tillagt senare så att man kan se vad man accepterar inte bara ID
+        public string ItemDescription { get; private set; }   //tillagt senare så att man kan se vad man accpterar inte bara ID
         public string SenderUsername { get; private set; }   // vem som skickade förfrågan
         public string ReceiverUsername { get; private set; } // ägaren av item
-        public TradeStatus Status { get; private set; }
+        public TradeStatus Status { get; private set; } 
 
         public Trade(int itemId, string itemDescription, string senderUsername, string receiverUsername)
         {
@@ -38,12 +38,6 @@ namespace App
         {
             Status = TradeStatus.Denied;
         }
-        public static void SetNextId(int next)
-        {
-            if (next > _nextId)
-                _nextId = next;
-        }
 
-        public static int GetNextId() => _nextId;
     }
 }
