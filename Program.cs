@@ -10,6 +10,11 @@ List<Trade> trades = new List<Trade>();
 if (users.Count() == 0)
 {
     users.Add(new User("dt", "pass"));
+    users.Add(new User("testuser", "pass"));
+}
+if (trades.Count() == 0)
+{
+    trades.Add(new Trade(1, "MSI Gpu 3090 Changes For Asus Gpu 4080", "dt", "testuser"));  //(int itemId, string itemDescription, string senderUsername, string receiverUsername)
 }
 
 User? active_user = null;
