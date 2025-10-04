@@ -1,9 +1,14 @@
-﻿using App;
+﻿
+
+
+using App;
 
 // Ladda data från fil 
 List<User> users = new List<User>();
 List<Item> items = new List<Item>();
 List<Trade> trades = new List<Trade>();
+
+SaveLoad.LoadAll(users, items, trades);
 
 
 // Om inga users finns, lägg till en default
@@ -11,10 +16,12 @@ if (users.Count() == 0)
 {
     users.Add(new User("dt", "pass"));
     users.Add(new User("testuser", "pass"));
+    SaveLoad.LoadAll(users, items, trades);
 }
 if (trades.Count() == 0)
 {
     trades.Add(new Trade(1, "MSI Gpu 3090 Changes For Asus Gpu 4080", "dt", "testuser"));  //(int itemId, string itemDescription, string senderUsername, string receiverUsername)
+    SaveLoad.LoadAll(users, items, trades);
 }
 
 User? active_user = null;
@@ -70,6 +77,7 @@ while (running)
                 Console.Write("Password: ");
                 password = Console.ReadLine();
                 users.Add(new User(username, password));
+                SaveLoad.LoadAll(users, items, trades);
 
 
                 Console.Clear();
@@ -107,6 +115,7 @@ while (running)
                 Console.Write("Description: ");
                 string desc = Console.ReadLine();
                 items.Add(new Item(itemName, desc, active_user.Username));
+                SaveLoad.LoadAll(users, items, trades);
 
                
 
@@ -169,6 +178,7 @@ while (running)
 
                 // Skapa trade (sender = active_user, receiver = selItem.Owner)
                 trades.Add(new Trade(selItem.Id, selItem.Description, active_user.Username, selItem.Owner));
+                SaveLoad.LoadAll(users, items, trades);
                 
                 Console.WriteLine("Trade request sent.");
                 Console.ReadLine();
@@ -240,6 +250,7 @@ while (running)
                             break;
                         }
                     }
+                    SaveLoad.LoadAll(users, items, trades);
                     
                     Console.WriteLine("Trade approved and ownership transferred.");
                     Console.ReadLine();
@@ -247,6 +258,7 @@ while (running)
                 else if (act == "2")
                 {
                     foundTrade.Deny();
+                    SaveLoad.LoadAll(users, items, trades);
                     
                     Console.WriteLine("Trade denied.");
                     Console.ReadLine();
@@ -350,6 +362,7 @@ while (running)
 
                 // Ta bort alla trades som är kopplade till användaren
                 trades.RemoveAll(t => t.SenderUsername == active_user.Username || t.ReceiverUsername == active_user.Username);
+                SaveLoad.LoadAll(users, items, trades);
 
                 
 
