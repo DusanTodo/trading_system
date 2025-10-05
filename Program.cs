@@ -77,7 +77,7 @@ while (running)
                 Console.Write("Password: ");
                 password = Console.ReadLine();
                 users.Add(new User(username, password));
-                SaveLoad.LoadAll(users, items, trades);
+                SaveLoad.SaveAll(users, items, trades);
 
 
                 Console.Clear();
@@ -115,7 +115,7 @@ while (running)
                 Console.Write("Description: ");
                 string desc = Console.ReadLine();
                 items.Add(new Item(itemName, desc, active_user.Username));
-                SaveLoad.LoadAll(users, items, trades);
+                SaveLoad.SaveAll(users, items, trades);
 
                
 
@@ -178,7 +178,7 @@ while (running)
 
                 // Skapa trade (sender = active_user, receiver = selItem.Owner)
                 trades.Add(new Trade(selItem.Id, selItem.Description, active_user.Username, selItem.Owner));
-                SaveLoad.LoadAll(users, items, trades);
+                SaveLoad.SaveAll(users, items, trades);
                 
                 Console.WriteLine("Trade request sent.");
                 Console.ReadLine();
@@ -250,7 +250,7 @@ while (running)
                             break;
                         }
                     }
-                    SaveLoad.LoadAll(users, items, trades);
+                    SaveLoad.SaveAll(users, items, trades);
                     
                     Console.WriteLine("Trade approved and ownership transferred.");
                     Console.ReadLine();
@@ -258,7 +258,7 @@ while (running)
                 else if (act == "2")
                 {
                     foundTrade.Deny();
-                    SaveLoad.LoadAll(users, items, trades);
+                    SaveLoad.SaveAll(users, items, trades);
                     
                     Console.WriteLine("Trade denied.");
                     Console.ReadLine();
@@ -362,7 +362,7 @@ while (running)
 
                 // Ta bort alla trades som är kopplade till användaren
                 trades.RemoveAll(t => t.SenderUsername == active_user.Username || t.ReceiverUsername == active_user.Username);
-                SaveLoad.LoadAll(users, items, trades);
+                SaveLoad.SaveAll(users, items, trades);
 
                 
 

@@ -13,7 +13,7 @@ namespace App
         private static string itemsFile = "items.txt";
         private static string tradesFile = "trades.txt";
 
-        public static void LoadAll(List<User> users, List<Items> items, List<Trades> trades)
+        public static void LoadAll(List<User> users, List<Item> items, List<Trade> trades)
         {
             LoadUsers(users);
             LoadItems(items);
@@ -21,7 +21,7 @@ namespace App
 
         }
 
-        public static void SaveAll(List<User> users, List<Items> items, List<Trades> trades)
+        public static void SaveAll(List<User> users, List<Item> items, List<Trade> trades)
         {
             SaveUsers(users);
             SaveItems(items);
