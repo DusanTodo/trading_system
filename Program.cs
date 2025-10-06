@@ -42,7 +42,7 @@ while (running) //while loopen, så länge running is true så visas det menuy s
         {
             case "1":
                 Console.Clear();
-                Console.Write("Username: ");
+                Console.Write("Username/email: ");
                 string username = Console.ReadLine();
                 Console.Write("Password: ");
                 string password = Console.ReadLine();
@@ -66,7 +66,7 @@ while (running) //while loopen, så länge running is true så visas det menuy s
 
             case "2":
                 Console.Clear();
-                Console.Write("Username: ");
+                Console.Write("Username/email: ");
                 username = Console.ReadLine();
                 Console.Clear();
                 Console.Write("Password: ");
